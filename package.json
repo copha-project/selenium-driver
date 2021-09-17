@@ -1,0 +1,11 @@
+{
+  "name": "browser-driver-templete",
+  "version": "0.0.1",
+  "main": "index.js",
+  "repository": "https://github.com/copha-project/browser-driver-templete",
+  "author": "aong <yxwzaxns@gmail.com>",
+  "license": "MIT",
+  "script": {
+      "test": "node test/index.test.js"
+  }
+}
