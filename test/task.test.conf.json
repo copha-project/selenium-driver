@@ -1,0 +1,21 @@
+{
+    "main": {
+        "name": "",
+        "desc": "",
+        "createTime": "",
+        "rootPath": "",
+        "configPath": "",
+        "dataPath": "",
+        "debug": false,
+        "useProxy": false,
+        "alwaysRestart": false,
+        "driver": "",
+        "job": ""
+    },
+    "Driver": {},
+    "Job": {},
+    "Storage":{
+        "Type": "file",
+        "Database": ""
+    }
+}

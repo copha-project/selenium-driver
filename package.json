@@ -1,11 +1,14 @@
 {
-  "name": "browser-driver-templete",
+  "name": "selenium-driver",
   "version": "0.0.1",
   "main": "index.js",
-  "repository": "https://github.com/copha-project/browser-driver-templete",
+  "repository": "https://github.com/copha-project/selenium-driver",
   "author": "aong <yxwzaxns@gmail.com>",
   "license": "MIT",
-  "script": {
-      "test": "node test/index.test.js"
+  "scripts": {
+    "test": "node test/index.test.js"
+  },
+  "dependencies": {
+    "selenium-webdriver": "^4.0.0-rc-1"
   }
 }

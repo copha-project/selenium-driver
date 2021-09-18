@@ -1,7 +1,13 @@
 const Driver = require('../index')
+const TaskTestConfig = require('./task.test.conf.json')
+const pkg = require('../package')
 
-const diver = new Driver({})
+TaskTestConfig.main.driver = 'selenium'
+TaskTestConfig.Driver = Driver.CONFIG
 
-driver.open('https://copha.com').then(res=>{
-    console.log(driver.getTitle())
-})
+;(async ()=>{
+    const driver = new Driver(TaskTestConfig)
+    await driver.init()
+    await driver.open(pkg.repository)
+    console.log(await driver.getTitle())
+})()
