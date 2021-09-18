@@ -7,7 +7,13 @@ TaskTestConfig.Driver = Driver.CONFIG
 
 ;(async ()=>{
     const driver = new Driver(TaskTestConfig)
-    await driver.init()
-    await driver.open(pkg.repository)
-    console.log(await driver.getTitle())
+    try {
+        await driver.init()
+        await driver.open(pkg.repository)
+        console.log(await driver.getTitle())
+    } catch (e) {
+
+    } finally {
+        await driver.clear()
+    }
 })()
