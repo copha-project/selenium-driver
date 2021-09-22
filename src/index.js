@@ -73,8 +73,8 @@ class Selenium extends Driver {
             case 'chrome':
                 {
                     options = new chrome.Options()
-                    if(this.conf?.Driver?.browserProfile){
-                        options.addArguments(`user-data-dir=${this.conf?.Driver.browserProfile}`)
+                    if(this.conf?.Driver?.BrowserProfile){
+                        options.addArguments(`user-data-dir=${this.conf?.Driver.BrowserProfile}`)
                     }
                     options.setUserPreferences({
                         'download.default_directory': path.resolve(this.conf.main.dataPath,'download')
@@ -106,8 +106,10 @@ class Selenium extends Driver {
     }
     setProxy(driverBuilder){
         const _setProxy = () => {
-            driverBuilder.setProxy(proxy.socks('127.0.0.1:1086', 5))
-            this.log.warn('Task run with proxy !!!')
+            // driverBuilder.setProxy(proxy.socks('127.0.0.1:1086', 5))
+            const proxyString = `${this.appSettings.Proxy[0].host}:${this.appSettings.Proxy[0].port}`
+            driverBuilder.setProxy(proxy.socks(proxyString, 5))
+            this.log.warn(`!! Task run with proxy: ${proxyString}`)
         }
         if(process.env['COPHA_USE_PROXY']){
             _setProxy()
@@ -121,7 +123,9 @@ class Selenium extends Driver {
 
     }
     async open(url, ignoreErr=false) {
-        url = url || this.conf.main?.targetUrl
+        if(!url) {
+            throw Error(`open url can't be blank`)
+        }
         // 3次重试
         const maxCount = 3
         let count = 1
@@ -131,7 +135,7 @@ class Selenium extends Driver {
             if(error.message.includes('ERR_CONNECTION_RESET')) {
                 throw Error('ERR_CONNECTION_RESET')
             }
-            if(error.name === 'TimeoutError') {
+            if(error.name === 'TimeoutError' && !ignoreErr) {
                 throw Error('TimeoutError')
             }
             while (count <= maxCount && !ignoreErr) {
