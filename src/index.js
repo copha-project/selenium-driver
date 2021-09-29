@@ -122,7 +122,7 @@ class Selenium extends Driver {
     setPreference(driverBuilder){
 
     }
-    async open(url, ignoreErr=false) {
+    async open(url, options = {ignoreErr:false, ignoreTimeout: false}) {
         if(!url) {
             throw Error(`open url can't be blank`)
         }
@@ -132,25 +132,26 @@ class Selenium extends Driver {
         try {
             await this.driver.get(url)
         } catch (error) {
-            if(error.message.includes('ERR_CONNECTION_RESET')) {
+            if(error.message.includes('ERR_CONNECTION_RESET') && !options.ignoreErr) {
                 throw Error('ERR_CONNECTION_RESET')
             }
-            if(error.name === 'TimeoutError' && !ignoreErr) {
-                throw Error('TimeoutError')
-            }
-            while (count <= maxCount && !ignoreErr) {
-                this.log.warn(`refresh it again ${count}/${maxCount}`)
-                try {
-                    await this.driver.get(url)
-                    break
-                } catch (error) {
-                    this.log.err(`open url err: ${error}`)
-                    count++
+            if(error.name === 'TimeoutError') {
+                if(!options.ignoreTimeout){
+                    throw Error('TimeoutError')
+                }
+            }else{
+                while (count <= maxCount) {
+                    this.log.warn(`refresh it again ${count}/${maxCount}`)
+                    try {
+                        await this.driver.get(url)
+                        break
+                    } catch (error) {
+                        this.log.err(`open url err: ${error}`)
+                        count++
+                    }
                 }
             }
-        }
-        if (count == 4 && !ignoreErr) {
-            throw Error('open url failed, timeout')
+
         }
     }
 
