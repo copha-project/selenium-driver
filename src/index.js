@@ -160,7 +160,7 @@ class Selenium extends Driver {
             try {
                 await this.driver.quit()
             } catch (error) {
-                throw Error(`clear web driver err: ${error}`)
+                this.log.err(`clear web driver err: ${error.message}`)
             } finally{
                 this.driver = null
             }
@@ -176,6 +176,10 @@ class Selenium extends Driver {
      */
     async getTitle(){
         return this.driver.getTitle()
+    }
+
+    getCurrentUrl(){
+        return this.driver.getCurrentUrl()
     }
 
     buildSelector(k,v){
