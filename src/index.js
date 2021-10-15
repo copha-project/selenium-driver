@@ -23,7 +23,7 @@ class Selenium extends Driver {
 
             this.setOptions(driverBuilder)
             this.setPreference(driverBuilder)
-            this.setProxy(driverBuilder)
+            await this.setProxy(driverBuilder)
             this.driver = await driverBuilder.build()
 
             // if(this.conf.main.driver == 'chrome'){
@@ -104,18 +104,28 @@ class Selenium extends Driver {
         }
 
     }
-    setProxy(driverBuilder){
-        const _setProxy = () => {
-            // driverBuilder.setProxy(proxy.socks('127.0.0.1:1086', 5))
-            const proxyString = `${this.appSettings.Proxy[0].host}:${this.appSettings.Proxy[0].port}`
-            driverBuilder.setProxy(proxy.socks(proxyString, 5))
-            this.log.warn(`!! Task run with proxy: ${proxyString}`)
+    async setProxy(driverBuilder){
+        const _setProxy = async () => {
+            const proxyInfo = await this.getProxy()
+            const proxyString = `${proxyInfo.host}:${proxyInfo.port}`
+            switch (proxyInfo.type) {
+                case 'socks':
+                    driverBuilder.setProxy(proxy.socks(proxyString, 5))
+                    break;
+                case 'http':
+                case 'https':
+                    driverBuilder.setProxy(proxy.manual({http:proxyString,https:proxyString}))
+                    break
+                default:
+                    throw new Error('proxy type not support')
+            }
+            this.log.warn(`Task run with proxy: ${proxyString}`)
         }
         if(process.env['COPHA_USE_PROXY']){
-            _setProxy()
+            return _setProxy()
         }else{
             if (this.conf.main.useProxy) {
-                _setProxy()
+                return _setProxy()
             }
         }
     }
