@@ -43,20 +43,20 @@ class Selenium extends Driver {
             // this.driver.session_.then(e=>{e.id_='45464456981325fe775059d49db180ce'})
 
         } catch (error) {
-            throw new Error(`Driver init failed : ${error}`)
+            throw new Error(`Driver init failed : ${error.message}`)
         }
         this.log.info('web driver init end')
     }
     setBrowser(driverBuilder){
-        driverBuilder.forBrowser(this.conf?.Driver?.Browser)
+        driverBuilder.forBrowser(this.conf?.Browser)
     }
     setDriverServer(driverBuilder){
-        if(this.conf?.Driver?.RemoteServer){
-            driverBuilder.usingServer(this.conf.Driver.RemoteServer)
+        if(this.conf?.RemoteServer){
+            driverBuilder.usingServer(this.conf.RemoteServer)
             // SELENIUM_REMOTE_URL=http://127.0.0.1:50011
             return
         }
-        switch (this.conf?.Driver?.Browser) {
+        switch (this.conf?.Browser) {
             case 'firefox':
                 driverBuilder.setFirefoxService(new firefox.ServiceBuilder(browserDriver.firefox))
                 break;
@@ -69,15 +69,15 @@ class Selenium extends Driver {
     }
     setOptions(driverBuilder){
         let options = null
-        switch (this.conf?.Driver?.Browser) {
+        switch (this.conf?.Browser) {
             case 'chrome':
                 {
                     options = new chrome.Options()
-                    if(this.conf?.Driver?.BrowserProfile){
-                        options.addArguments(`user-data-dir=${this.conf?.Driver.BrowserProfile}`)
+                    if(this.conf?.BrowserProfile){
+                        options.addArguments(`user-data-dir=${this.conf.BrowserProfile}`)
                     }
                     options.setUserPreferences({
-                        'download.default_directory': path.resolve(this.conf.main.dataPath,'download')
+                        'download.default_directory': path.resolve(this.projectConfig.main.dataPath,'download')
                     })
                     driverBuilder.withCapabilities(webdriver.Capabilities.chrome())
                         .setChromeOptions(options)
@@ -86,7 +86,7 @@ class Selenium extends Driver {
             default:
                 {
                     options = new firefox.Options()
-                    if(this.conf.main.useProxy){
+                    if(this.projectConfig.main.useProxy){
                         options.setPreference("network.proxy.socks_remote_dns", true)
                     }
                     driverBuilder.withCapabilities(webdriver.Capabilities.firefox())
@@ -96,7 +96,7 @@ class Selenium extends Driver {
         if(this.getEnv("COPHA_SHOW_HEADLESS_GUI")){
 
         }else{
-            if (this.conf.main.debug) {
+            if (this.projectConfig.main.debug) {
 
             }else{
                 options.headless()
@@ -124,7 +124,7 @@ class Selenium extends Driver {
         if(process.env['COPHA_USE_PROXY']){
             return _setProxy()
         }else{
-            if (this.conf.main.useProxy) {
+            if (this.projectConfig.main.useProxy) {
                 return _setProxy()
             }
         }
