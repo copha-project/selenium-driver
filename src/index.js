@@ -5,12 +5,12 @@ const proxy = require('selenium-webdriver/proxy')
 const firefox = require('selenium-webdriver/firefox')
 const chrome = require('selenium-webdriver/chrome')
 
-const { Driver, Utils } = require('copha')
+const { Driver } = require('copha')
 const browserDriver = require('browser-driver')
 const Config = require('./config.json')
 
 class Selenium extends Driver {
-    DriverModule = require('selenium-webdriver')
+    DriverModule = webdriver
     constructor(conf) {
         super(conf)
     }
