@@ -181,6 +181,21 @@ class Selenium extends Driver {
         return this.driver.sleep(n)
     }
 
+    async reload(){
+        return this.driver.navigate().refresh()
+    }
+
+    async refresh(){
+        return this.driver.navigate().refresh()
+    }
+
+    async takeScreenshot(node, scroll=false){
+        if(node){
+            return node.takeScreenshot(scroll)
+        }
+        const body = await this.findElementByCss('body')
+        return body.takeScreenshot(scroll)
+    }
     /**
      * for test
      */
