@@ -196,6 +196,10 @@ class Selenium extends Driver {
         const body = await this.findElementByCss('body')
         return body.takeScreenshot(scroll)
     }
+
+    async getAttribute(node, attr){
+        return node.getAttribute(attr)
+    }
     /**
      * for test
      */
