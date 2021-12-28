@@ -33,7 +33,7 @@ class Selenium extends Driver {
 
             await this.driver.manage().setTimeouts(
                 {
-                    pageLoad: this.appSettings?.Driver?.Time?.PageLoadTimeout || 1000,
+                    pageLoad: this.appSettings?.Driver?.Time?.PageLoadTimeout || 10000,
                     implicit: 10000
                 }
             )
@@ -79,6 +79,11 @@ class Selenium extends Driver {
                     options.setUserPreferences({
                         'download.default_directory': path.resolve(this.projectConfig.main.dataPath,'download')
                     })
+
+                    options.addArguments('disable-blink-features=AutomationControlled')
+
+                    options.excludeSwitches('enable-automation')
+
                     driverBuilder.withCapabilities(webdriver.Capabilities.chrome())
                         .setChromeOptions(options)
                 }
@@ -147,7 +152,7 @@ class Selenium extends Driver {
             }
             if(error.name === 'TimeoutError') {
                 if(!options.ignoreTimeout){
-                    throw Error('TimeoutError')
+                    throw Error('selenium module open(): TimeoutError')
                 }
             }else{
                 while (count <= maxCount) {
@@ -166,14 +171,12 @@ class Selenium extends Driver {
     }
 
     async clear() {
-        if (this.driver) {
-            try {
-                await this.driver.quit()
-            } catch (error) {
-                this.log.err(`clear web driver err: ${error.message}`)
-            } finally{
-                this.driver = null
-            }
+        try {
+            await this.driver?.quit?.()
+        } catch (error) {
+            this.log.err(`clear web driver err: ${error.message}`)
+        } finally{
+            this.driver = null
         }
     }
 
@@ -268,6 +271,46 @@ class Selenium extends Driver {
             await this.driver.close()
         }
         await this.driver.switchTo().window(whs[0])
+    }
+
+    // method not need change, they has be implement by above method
+    buildSelectorForId(v){
+        return this.buildSelector('id', v)
+    }
+    buildSelectorForXpath(v){
+        return this.buildSelector('xpath', v)
+    }
+    buildSelectorForCss(v){
+        return this.buildSelector('css', v)
+    }
+
+    async findElementBy(k, v, target){
+        if(target){
+            return target.findElement(this.buildSelector(k,v))
+        }
+        return this.findElement(this.buildSelector(k,v))
+    }
+    async findElementByXpath(v, target){
+        return this.findElementBy('xpath', v, target)
+    }
+    async findElementByCss(v, target){
+        return this.findElementBy('css', v, target)
+    }
+    async findElementById(v, target){
+        return this.findElementBy('id', v, target)
+    }
+
+    async findElementsBy(k, v, target){
+        if(target){
+            return target.findElements(this.buildSelector(k,v))
+        }
+        return this.findElements(this.buildSelector(k,v))
+    }
+    async findElementsByCss(v, target){
+        return this.findElementsBy('css', v, target)
+    }
+    async findElementsByXpath(v, target){
+        return this.findElementsBy('xpath', v, target)
     }
 }
 
